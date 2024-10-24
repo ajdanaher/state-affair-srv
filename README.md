@@ -1,7 +1,7 @@
 # state-affair-srv
 
-***   I HAVE NOT SHARED CREDENTIALS FOR DATABASE AND API IN THIS REPO, PLEASE CONTACT ME FOR THAT ****
-***   IF YOU LOOK AT THE CONFIGURATION FILE, CORRECT VALUE NEEDS TO BE PLACED TO MAKE IT WORK     ****
+**\* I HAVE NOT SHARED CREDENTIALS FOR DATABASE AND API IN THIS REPO, PLEASE CONTACT ME FOR THAT \*\***
+**\* IF YOU LOOK AT THE CONFIGURATION FILE, CORRECT VALUE NEEDS TO BE PLACED TO MAKE IT WORK \*\***
 
 back end server
 
@@ -43,10 +43,10 @@ GET /v1/news
   }
 
 Cache Implementation:
-Cache is also implementated in the application. By default cache is set aside of the microservice to
+Cache is also implementated in the application. By default cache has to be set aside of the microservice (a seperate microservice) to
 avoid single point of failure but for this demo project it is implemented as part of this server. The
 logic to have cache is - when we post or fetch data from remote, it not only updates Database, but also updates the cache as well..
-Again implementation is not perfact but this moment key to set data in the cache is combination of state, topic and title seperated by #.
+Again implementation is not perfact but this moment key to set data in the cache is combination of state, topic and title seperated by #. if user queries data for these fields data would come from the cache.
 Please note, if data is present in the cache, response is very quick.
 
 News Aggregation and Uniqueness of the data:
@@ -81,3 +81,5 @@ Extra Considerations:
 - Another header I have is response time, which gives information how much time server took to response.
 - I also have log implementation. Please look at ./log/application.log file.
 - Currently we dont have user(s) data in the sytem. This is very important because we can implement login functionality and other features which was asked like RealTime update, User Preference and Subscription. All these can be done if we have user data with us. If time permits today after implemeting UI i will work on User implementation as well.
+- Cache - Cache is implemented in this microservice, i mentioned earlier that it has limited functionality. Important consideration we need to make in final implementation is first we should get data from the cache and also from remote API's as well.. we should join (create union) for these data in such a way that data presented to the user is unique and at the same time combination of both the sources. An ideal case would be to send data to the user in stream,,,
+- we should also have logic in place to rank the news article. e.g. some articles should have highr priority v/s other. we should present higher priority articles to users first in the order of articles. This will ensure that users will come to our site more often.
