@@ -6,6 +6,7 @@ import { createDB, queryDB } from "../helpers/DBHelper.js";
 import { fetchRemoteNews } from "../helpers/http.js";
 import crypto from "crypto";
 import { getFromCache, setIntoCache } from "../helpers/http.js";
+import myCache from "../helpers/CacheServer.js";
 
 const getNews = async (req, res) => {
   const corr_id = req.headers["X-Correlation-Id"];
@@ -21,7 +22,7 @@ const getNews = async (req, res) => {
   if (title) {
     q.title = title;
   }
-  try { 
+  try {
     let results = null;
     let fallBack = false;
     try {
@@ -57,6 +58,14 @@ const getNews = async (req, res) => {
     } else {
       res.status(CODES.OK).json(results);
     }
+    results.forEach((result) => {
+      const hash = crypto
+        .createHash("sha256")
+        .update(`${result.state}#${result.topic}#${result.title}`)
+        .digest("hex");
+      myCache.set(hash, result);
+    });
+    log.info("its done");
   } catch (e) {
     log.error(`${e}, corr_id=${corr_id}`);
     res.status(CODES.INTERNAL_SERVER_ERROR).json({ message: e });
