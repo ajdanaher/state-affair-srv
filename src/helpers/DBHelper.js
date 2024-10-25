@@ -1,4 +1,4 @@
-import { MongoClient, ServerApiVersion } from "mongodb";
+import { MongoClient, ServerApiVersion, ObjectId } from "mongodb";
 
 import log from "./Logger.js";
 
@@ -95,6 +95,37 @@ const queryDB = (dbName, collectionName, query, corr_id = "") =>
  * @param {*} dbName
  * @param {*} collectionName
  * @param {*} query
+ * @returns array of objects.
+ */
+const queryByID = (dbName, collectionName, _id, corr_id = "") =>
+  new Promise(async (resolve, reject) => {
+    let client = null;
+    let step = 1;
+    try {
+      client = await connect();
+      step++;
+      const db = client.db(dbName);
+      step++;
+      const collection = db.collection(collectionName);
+      step++;
+      const document = await collection.findOne({ _id: new ObjectId(_id) });
+      step++;
+      await client.close();
+      resolve(document);
+    } catch (e) {
+      log.error(`Error - ${e.message} at step=${step}. corr_id=${corr_id}`);
+      if (step > 1) {
+        await client.close();
+      }
+      reject(e.message);
+    }
+  });
+
+/**
+ *
+ * @param {*} dbName
+ * @param {*} collectionName
+ * @param {*} query
  * @returns
  */
 const createDB = (dbName, collectionName, data, corr_id = "") =>
@@ -121,4 +152,4 @@ const createDB = (dbName, collectionName, data, corr_id = "") =>
     }
   });
 
-export { connect, ping, queryDB, createDB };
+export { connect, ping, queryDB, createDB, queryByID };
