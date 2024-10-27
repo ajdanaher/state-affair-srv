@@ -22,7 +22,7 @@ const getNews = async (req, res) => {
   if (title) {
     q.title = title;
   }
-  if( _id) {
+  if (_id) {
     q._id = _id;
   }
   try {
@@ -49,7 +49,7 @@ const getNews = async (req, res) => {
     }
     //Fall Back
     if (fallBack === true) {
-      if(_id) {
+      if (_id) {
         results = await queryByID(db.database, db.newsCollection, _id, corr_id);
         fallBack = false;
       } else {
@@ -66,13 +66,14 @@ const getNews = async (req, res) => {
     } else {
       res.status(CODES.OK).json(results);
     }
-    fallBack && results.forEach((result) => {
-      const hash = crypto
-        .createHash("sha256")
-        .update(`${result.state}#${result.topic}#${result.title}`)
-        .digest("hex");
-      myCache.set(hash, result);
-    });
+    fallBack &&
+      results.forEach((result) => {
+        const hash = crypto
+          .createHash("sha256")
+          .update(`${result.state}#${result.topic}#${result.title}`)
+          .digest("hex");
+        myCache.set(hash, result);
+      });
   } catch (e) {
     log.error(`${e}, corr_id=${corr_id}`);
     res.status(CODES.INTERNAL_SERVER_ERROR).json({ message: e });
@@ -121,8 +122,10 @@ const fetchNews = async (req, res) => {
   const { q } = req.body;
   const corr_id = req.headers["X-Correlation-Id"];
   let step = 1;
-  if(!q) {
-    return res.status(CODES.BAD_REQUEST).json({ message: "Please provide topic." });
+  if (!q) {
+    return res
+      .status(CODES.BAD_REQUEST)
+      .json({ message: "Please provide topic." });
   }
   try {
     const news = await fetchRemoteNews(q);
