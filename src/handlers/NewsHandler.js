@@ -1,7 +1,7 @@
 import serverConfigurations from "../../serverConfigurations.js";
 import { default as CODES } from "../helpers/statusCodes.js";
 import log from "../helpers/Logger.js";
-import validate from "../helpers/RequestValidator.js";
+import { validate } from "../helpers/RequestValidator.js";
 import { createDB, queryDB, queryByID } from "../helpers/DBHelper.js";
 import { fetchRemoteNews } from "../helpers/http.js";
 import crypto from "crypto";
@@ -95,10 +95,11 @@ const updateDB = (key, value, corr_id) =>
       });
   });
 
+
+
 const postNews = async (req, res) => {
   const body = req.body;
   const corr_id = req.headers["X-Correlation-Id"];
-  let step = 1;
   try {
     await validate(body, corr_id);
   } catch (e) {

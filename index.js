@@ -18,6 +18,7 @@ import { default as CODES } from "./src/helpers/statusCodes.js";
 import { default as HealthRoutes } from "./src/routes/HealthRoutes.js";
 import { default as NewsRoutes } from "./src/routes/NewsRoutes.js";
 import { default as CacheRoutes } from "./src/routes/CacheRoutes.js";
+import { default as CommentsRoutes } from "./src/routes/CommentsRoutes.js";
 
 /**
  * Create Application
@@ -58,6 +59,7 @@ app.use((req, res, next) => {
 app.use("/v1/ping", HealthRoutes);
 app.use("/v1/cache", CacheRoutes);
 app.use("/v1/news", NewsRoutes);
+app.use("/v1/comments", CommentsRoutes);
 
 app.use((req, res) => {
   const statusMessage = `Not Found [${req.url}]`;

@@ -11,7 +11,14 @@ const Schema = Joi.object({
   content: Joi.string().not("").optional().max(10240),
 });
 
-const validate = (data, corr_id = "") =>
+const CommentsSchema = Joi.object({
+  comments: Joi.string().required(),
+  reaction: Joi.string().required(),
+  publishedAt: Joi.date().iso().required(),
+  id: Joi.string().required(),
+});
+
+export const validate = (data, corr_id = "") =>
   new Promise(async (resolve, reject) => {
     try {
       const result = await Schema.validateAsync(data);
@@ -23,4 +30,14 @@ const validate = (data, corr_id = "") =>
     }
   });
 
-export default validate;
+export const validateComments = (data, corr_id = "") =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const result = await CommentsSchema.validateAsync(data);
+      resolve(result);
+    } catch (e) {
+      const error = `Validation Error. ${e.message}`;
+      log.error(`${error} corr_id=${corr_id}`);
+      reject(error);
+    }
+  });
